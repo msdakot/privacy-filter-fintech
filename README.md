@@ -114,6 +114,8 @@ dtype: bf16
 
 Full recipe: [`docs/training_recipe.md`](docs/training_recipe.md)
 
+**Why full fine-tuning over LoRA:** LoRA was considered for parameter efficiency, but full fine-tuning was chosen because (a) `opf` natively supports it with a proven recipe, (b) the label delta is small enough (10 new labels on top of 55) that catastrophic forgetting on general PII is a manageable and measurable risk, and (c) the goal was learning the end-to-end fine-tuning workflow. The regression guardrail in eval (general PII F1 vs baseline) explicitly checks for forgetting.
+
 ---
 
 ## Reproduce
