@@ -1,6 +1,18 @@
 import json
 from datasets import load_dataset
 
+# Gretel stores full language names; normalize to ISO 639-1 codes
+_LANG_NORM = {
+    "English": "en",
+    "Spanish": "es",
+    "Swedish": "sv",
+    "German": "de",
+    "Italian": "it",
+    "Dutch": "nl",
+    "French": "fr",
+    "France": "fr",  # Gretel data quirk — "France" appears instead of "French"
+}
+
 
 def load_gretel(token: str | None = None) -> list[dict]:
     ds = load_dataset(
@@ -24,11 +36,14 @@ def load_gretel(token: str | None = None) -> list[dict]:
             if "start" in s and "end" in s and "label" in s
         ]
 
+        raw_lang = row.get("language", "en")
+        lang = _LANG_NORM.get(raw_lang, raw_lang)
+
         records.append({
             "text": row["generated_text"],
             "spans": normalized,
             "source": "gretel",
-            "language": row.get("language", "en"),
+            "language": lang,
         })
 
     return records

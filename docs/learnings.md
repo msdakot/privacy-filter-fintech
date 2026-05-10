@@ -46,6 +46,13 @@ No issues.
 - All from Gretel source (Nemotron and synthetic passed cleanly)
 - 0.13% drop rate is acceptable — document in data_provenance.md if asked
 
+### Language column was inconsistent across sources — caught post-push
+- Gretel stores full language names: `"English"`, `"Spanish"`, `"France"` (not `"French"`)
+- Nemotron/synthetic use ISO codes: `"en"`
+- Also: Gretel uses `"France"` as a data quirk instead of `"French"`
+- Fix: normalization map in `load_gretel.py` (`_LANG_NORM`) → all values now ISO 639-1
+- **Lesson**: always check `.unique()` or `Counter()` on categorical columns right after loading, before pushing
+
 ### Synthetic: 390 of targeted 400 (gen failures ~2.5%)
 - Template rendering occasionally fails to find the identifier in the rendered text (due to formatting edge cases)
 - Retry logic caps at 3× attempts per label — acceptable loss, no action needed
