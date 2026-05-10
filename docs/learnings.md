@@ -81,6 +81,12 @@ The plan assumed flags like `--model`, `--dataset <hf_path>`, `--output <hf_repo
 - Fixed: `harmonize.py` now maps Gretel's `company` → `company_name` (was `unique_id`)
 - `configs/label_space.json` uses the actual 55 base labels verified from the model config
 
+### opf train does NOT write incremental checkpoints
+- Checkpoint is written at end of training only — mid-run disconnect loses all progress
+- The Drive mount is for the final output, not resumption
+- Colab Pro requires browser to stay open; Pro+ ($50) adds true background execution
+- Corrected misleading "safe to disconnect" note in the notebook
+
 ### Label space JSON format for opf
 - Only need `span_class_names` (entity names without BIOES prefixes)
 - opf auto-expands to BIOES token labels internally
