@@ -13,30 +13,29 @@ import yaml
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train-config", default="configs/train_config.yaml")
+    parser.add_argument("--train-jsonl", required=True, help="Local opf-format train JSONL")
+    parser.add_argument("--val-jsonl", required=True, help="Local opf-format validation JSONL")
+    parser.add_argument("--checkpoint-dir", required=True, help="Local base model checkpoint dir")
+    parser.add_argument("--output-dir", required=True, help="Local output dir for trained checkpoint")
     args = parser.parse_args()
 
     with open(args.train_config) as f:
         cfg = yaml.safe_load(f)
 
-    model = cfg["model"]["base"]
-    dataset = cfg["dataset"]["hf_path"]
-    output = cfg["output"]["hf_repo"]
-    lr = cfg["training"]["learning_rate"]
-    epochs = cfg["training"]["epochs"]
-    bs = cfg["training"]["batch_size"]
-    grad_accum = cfg["training"]["grad_accumulation_steps"]
-    dtype = cfg["training"]["dtype"]
-
+    t = cfg["training"]
     cmd = [
-        "opf", "train",
-        "--model", model,
-        "--dataset", dataset,
-        "--output", output,
-        "--learning-rate", str(lr),
-        "--epochs", str(epochs),
-        "--batch-size", str(bs),
-        "--grad-accumulation-steps", str(grad_accum),
-        "--dtype", dtype,
+        "opf", "train", args.train_jsonl,
+        "--validation-dataset", args.val_jsonl,
+        "--checkpoint", args.checkpoint_dir,
+        "--label-space-json", "configs/label_space.json",
+        "--output-dir", args.output_dir,
+        "--overwrite-output",
+        "--epochs", str(t["epochs"]),
+        "--batch-size", str(t["batch_size"]),
+        "--grad-accum-steps", str(t["grad_accumulation_steps"]),
+        "--learning-rate", str(t["learning_rate"]),
+        "--weight-decay", str(t["weight_decay"]),
+        "--output-param-dtype", t["dtype"],
     ]
 
     print("Running:", " ".join(cmd))

@@ -13,8 +13,8 @@ GRETEL_TO_UNIFIED = {
     "driver_license_number": "certificate_license_number",
     "passport_number": "national_id",
     # Lossy mappings — documented in label_taxonomy.md
-    "name": "first_name",       # full name → first_name (conservative, see docs)
-    "company": "unique_id",     # company name → unique_id (closest enterprise ID)
+    "name": "first_name",           # full name → first_name (conservative, see docs)
+    "company": "company_name",      # base model has company_name, not unique_id
     # 1:1 pass-throughs (listed explicitly for completeness)
     "iban": "iban",
     "bban": "bban",

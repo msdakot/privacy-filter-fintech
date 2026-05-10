@@ -61,7 +61,31 @@ No issues.
 
 ## Phase 3 — Training
 
-*(Add entries here as they arise)*
+### opf train CLI is very different from what the plan assumed
+The plan assumed flags like `--model`, `--dataset <hf_path>`, `--output <hf_repo>`. Actual CLI:
+- Takes **local JSONL files** only — no HF Hub paths
+- Base model via `--checkpoint <local_dir>` — needs `snapshot_download` first
+- Output is a **local directory** via `--output-dir` — HF push is a separate manual step
+- `--output-param-dtype bf16` (not `--dtype`)
+- `--grad-accum-steps` (not `--grad-accumulation-steps`)
+- Custom labels via `--label-space-json` — expects `{"span_class_names": ["O", ...]}`
+
+### Our HF dataset format ≠ opf JSONL format — needs export step
+- Our format: `"spans": [{"start": 18, "end": 40, "label": "iban"}]` (list of objects)
+- opf format: `"spans": {"iban": [[18, 40]]}` (dict of label → list of [start, end] pairs)
+- Added `src/data/export_opf.py` to handle conversion; Colab notebook does this inline
+
+### base model has `company_name` not in the plan's taxonomy
+- Plan listed `marital_status` and `nationality` as base labels — neither exists in the actual model
+- Base model has `company_name` (plan omitted this)
+- Fixed: `harmonize.py` now maps Gretel's `company` → `company_name` (was `unique_id`)
+- `configs/label_space.json` uses the actual 55 base labels verified from the model config
+
+### Label space JSON format for opf
+- Only need `span_class_names` (entity names without BIOES prefixes)
+- opf auto-expands to BIOES token labels internally
+- Must include `"O"` as first entry
+- 66 total entries = `"O"` + 55 base + 10 fintech
 
 ---
 
