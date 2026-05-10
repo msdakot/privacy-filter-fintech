@@ -1,6 +1,6 @@
 # Fintech Privacy Filter
 
-A multilingual, fintech-specialized PII detection model fine-tuned from [`OpenMed/privacy-filter-nemotron`](https://huggingface.co/OpenMed/privacy-filter-nemotron). Extends the base model's 55-label taxonomy with 10 financial-domain entity types (IBAN, LEI, ISIN, CUSIP, VAT numbers, etc.) and adds multilingual coverage across 7 European languages.
+A multilingual, fintech-specialized PII detection model fine-tuned from [`openai/privacy-filter`](https://huggingface.co/openai/privacy-filter). Extends the base model's taxonomy with 65 entity types — 10 new financial-domain labels (IBAN, LEI, ISIN, CUSIP, VAT numbers, etc.) — and adds multilingual coverage across 7 European languages.
 
 > **Status**: Training in progress — results will be updated after the Colab training run completes.
 
@@ -62,7 +62,7 @@ for r in results:
 
 ## Label taxonomy
 
-65-label unified taxonomy: 55 inherited from `OpenMed/privacy-filter-nemotron` + 10 new fintech labels.
+65-label unified taxonomy: fine-tuned from `openai/privacy-filter` (8 base labels) with output head expanded to 65 via `--label-space-json`, covering all labels from training data + 10 new fintech labels.
 
 **New fintech labels:**
 
@@ -99,7 +99,7 @@ Full provenance: [`docs/data_provenance.md`](docs/data_provenance.md)
 
 ## Training
 
-Base model: `OpenMed/privacy-filter-nemotron` (achieves F1 0.95 across 55 labels)  
+Base model: `openai/privacy-filter` (canonical opf-format checkpoint, 8 labels)  
 Framework: [`opf`](https://github.com/openai/privacy-filter) CLI  
 Hardware: Google Colab T4 (~3 hours)
 

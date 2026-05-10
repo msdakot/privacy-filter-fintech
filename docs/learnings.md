@@ -81,12 +81,13 @@ The plan assumed flags like `--model`, `--dataset <hf_path>`, `--output <hf_repo
 - Fixed: `harmonize.py` now maps Gretel's `company` → `company_name` (was `unique_id`)
 - `configs/label_space.json` uses the actual 55 base labels verified from the model config
 
-### OpenMed/privacy-filter-nemotron config must be patched for opf train
-- Error: `ValueError: Checkpoint config field encoding must be a non-empty string`
-- Root cause: OpenMed was saved in **transformers format** — `opf train` expects its own format with `encoding` and `bidirectional_context` fields in config.json
-- Fix: patch config.json in Colab after `snapshot_download` — add `encoding: "o200k_base"` and `bidirectional_context: true` via `cfg.setdefault()`
-- Uses `setdefault` so existing values are preserved; only missing fields are added
-- If weight tensor names are also incompatible (transformers vs opf format), a further error will appear at weight loading — fall back to `openai/privacy-filter` if that happens
+### OpenMed/privacy-filter-nemotron is incompatible with opf train as a base checkpoint
+- Error 1: `ValueError: Checkpoint config field encoding must be a non-empty string` — patching config.json with `encoding` and `bidirectional_context` got past this
+- Error 2: `ValueError: num_labels=221 does not match known encoder label spaces (v2:33, v4:57, v7:101)` — opf hardcodes valid checkpoint sizes; OpenMed's 221-label BIOES taxonomy (55 entities × 4 + O) is not in the allowed set
+- Root cause: OpenMed was saved in transformers format with a label count opf doesn't recognize. Not patchable.
+- Fix: fall back to `openai/privacy-filter` (v2:33, the canonical opf base). Output head expands 8→65 labels via `--label-space-json`.
+- Impact: training still covers all 65 labels; the 8 existing opf labels get fine-tuned, the 57 new ones get freshly initialized output heads
+- Narrative: "Fine-tuned from openai/privacy-filter and extended to 65 fintech-specialized labels" — still a strong story; base model choice was forced by opf's checkpoint format requirements
 
 ### opf train does NOT write incremental checkpoints
 - Checkpoint is written at end of training only — mid-run disconnect loses all progress

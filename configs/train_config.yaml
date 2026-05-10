@@ -1,5 +1,5 @@
 model:
-  base: OpenMed/privacy-filter-nemotron  # config.json patched in Colab to add opf-required fields (encoding, bidirectional_context)
+  base: openai/privacy-filter  # opf only accepts its own checkpoint format; OpenMed (221 labels) not in known set (v2:33, v4:57, v7:101)
 
 training:
   learning_rate: 1.0e-4

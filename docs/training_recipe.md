@@ -6,9 +6,9 @@ Documents the hyperparameters, infrastructure, and decisions for the training ru
 
 ## Base model
 
-`OpenMed/privacy-filter-nemotron` — fine-tuned from `openai/privacy-filter` with 55-label BIOES taxonomy.
+`openai/privacy-filter` — the canonical opf-format checkpoint (8 labels, v2:33 BIOES).
 
-**Fallback**: If base model fails to load in Colab, fall back to `openai/privacy-filter` (8 labels). Document decision here if triggered.
+**Why not OpenMed/privacy-filter-nemotron**: opf train validates that the checkpoint's `num_labels` matches a known set (v2:33, v4:57, v7:101). OpenMed has 221 labels (55 entities × 4 BIOES + O) which is not in the allowed set. The error is not patchable — opf only accepts checkpoints it originally produced. Label space is expanded 8→65 via `--label-space-json`.
 
 ## Hyperparameters
 
