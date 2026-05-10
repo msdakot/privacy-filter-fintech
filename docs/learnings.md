@@ -81,6 +81,13 @@ The plan assumed flags like `--model`, `--dataset <hf_path>`, `--output <hf_repo
 - Fixed: `harmonize.py` now maps Gretel's `company` → `company_name` (was `unique_id`)
 - `configs/label_space.json` uses the actual 55 base labels verified from the model config
 
+### OpenMed/privacy-filter-nemotron config must be patched for opf train
+- Error: `ValueError: Checkpoint config field encoding must be a non-empty string`
+- Root cause: OpenMed was saved in **transformers format** — `opf train` expects its own format with `encoding` and `bidirectional_context` fields in config.json
+- Fix: patch config.json in Colab after `snapshot_download` — add `encoding: "o200k_base"` and `bidirectional_context: true` via `cfg.setdefault()`
+- Uses `setdefault` so existing values are preserved; only missing fields are added
+- If weight tensor names are also incompatible (transformers vs opf format), a further error will appear at weight loading — fall back to `openai/privacy-filter` if that happens
+
 ### opf train does NOT write incremental checkpoints
 - Checkpoint is written at end of training only — mid-run disconnect loses all progress
 - The Drive mount is for the final output, not resumption

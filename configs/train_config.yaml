@@ -1,6 +1,5 @@
 model:
-  base: OpenMed/privacy-filter-nemotron
-  fallback: openai/privacy-filter  # use if nemotron fails to load in Colab
+  base: OpenMed/privacy-filter-nemotron  # config.json patched in Colab to add opf-required fields (encoding, bidirectional_context)
 
 training:
   learning_rate: 1.0e-4
