@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "fintech-privacy-filter"
+version = "0.1.0"
+description = "Fintech-specialized PII detection model fine-tuned from OpenMed/privacy-filter-nemotron"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "transformers>=4.40.0",
+    "datasets>=2.19.0",
+    "huggingface_hub>=0.22.0",
+    "python-stdnum>=1.20",
+    "seqeval>=1.2.2",
+    "pyyaml>=6.0",
+    "pandas>=2.0.0",
+    "opf @ git+https://github.com/openai/privacy-filter.git",
+]
+
+[project.optional-dependencies]
+dev = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

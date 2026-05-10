@@ -1,0 +1,42 @@
+models:
+  trained: msdakot/fintech-privacy-filter-v0
+  baseline: OpenMed/privacy-filter-nemotron
+
+dataset:
+  hf_path: msdakot/fintech-privacy-pii
+  split: test
+
+output_dir: outputs/eval_results
+
+fintech_labels:
+  - iban
+  - bban
+  - lei
+  - isin
+  - cusip
+  - swift_mt_ref
+  - policy_number
+  - vat_number
+  - loan_number
+
+shared_labels:
+  - account_number
+  - bank_routing_number
+  - swift_bic
+  - credit_debit_card
+
+general_pii_labels:
+  - first_name
+  - last_name
+  - email
+  - phone_number
+  - street_address
+
+languages:
+  - en
+  - es
+  - sv
+  - de
+  - it
+  - nl
+  - fr

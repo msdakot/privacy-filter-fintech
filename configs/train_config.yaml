@@ -1,0 +1,18 @@
+model:
+  base: OpenMed/privacy-filter-nemotron
+  fallback: openai/privacy-filter  # use if nemotron fails to load in Colab
+
+training:
+  learning_rate: 1.0e-4
+  epochs: 3
+  batch_size: 2
+  grad_accumulation_steps: 4
+  dtype: bf16
+  weight_decay: 0.0
+
+dataset:
+  hf_path: msdakot/fintech-privacy-pii
+
+output:
+  hf_repo: msdakot/fintech-privacy-filter-v0
+  checkpoint_dir: /content/drive/MyDrive/fintech-pii-checkpoints  # Colab Drive path
