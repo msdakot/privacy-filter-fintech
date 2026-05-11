@@ -49,13 +49,22 @@ If a future iteration targets a much larger base model or requires faster iterat
 
 ---
 
-## Actual results (filled in after training)
+## Actual results
+
+| Metric | Epoch 1 | Epoch 2 | Epoch 3 |
+|---|---|---|---|
+| Train loss | 0.1176 | 0.0810 | 0.0700 |
+| Val loss | 0.0934 | 0.0839 | 0.0785 |
+| Val token accuracy | 97.3% | 97.5% | 97.6% |
 
 | Metric | Value |
 |---|---|
-| Training runtime | TBD |
-| Final train loss | TBD |
-| Final val loss | TBD |
-| F1 on fintech labels | TBD |
-| F1 on shared labels | TBD |
-| F1 on general PII | TBD |
+| Training runtime | 5.9 hours (21,315s) |
+| Best epoch | 3 (val loss still decreasing — 1-2 more epochs would help) |
+| Train examples | 55,121 |
+| Val examples | 6,890 |
+| Output labels | 261 BIOES (65 entities × 4 + O) |
+| F1 on fintech labels | TBD (Phase 4) |
+| F1 on general PII | TBD (Phase 4) |
+
+No overfitting observed — val loss dropped every epoch alongside train loss.

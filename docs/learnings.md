@@ -120,6 +120,20 @@ The plan assumed flags like `--model`, `--dataset <hf_path>`, `--output <hf_repo
 
 ---
 
+### Training runtime was 5.9 hours, not 2-4 hours
+- Estimate was based on OpenMed-nemotron training (55 labels, fine-tuned from opf base)
+- Our run starts from 8-label base with 257 randomly initialized output heads — more learning per step
+- 55k examples × 3 epochs on T4 = 5.9 hours actual
+- Future estimate: plan for 6-8 hours when starting from a low-label base checkpoint
+
+### Val loss still decreasing at epoch 3 — model not fully converged
+- Epoch 1→2 val loss drop: 0.093 → 0.084 (large)
+- Epoch 2→3 val loss drop: 0.084 → 0.079 (smaller, diminishing returns)
+- 1-2 more epochs would likely improve entity-level F1, especially on thin fintech labels
+- Resume by pointing `--checkpoint` at the Drive output dir and running `--epochs 2`
+
+---
+
 ## Phase 4 — Evaluation
 
 *(Add entries here as they arise)*

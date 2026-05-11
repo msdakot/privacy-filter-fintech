@@ -19,13 +19,23 @@ Standard PII detection models handle common identifiers (names, emails, SSNs) bu
 
 ## Results
 
-*To be filled in after training. Target: improved F1 on fintech labels with no regression on general PII.*
+Training complete. Per-label F1 evaluation (Phase 4) in progress.
 
-| Label group | OpenMed-nemotron F1 | This model F1 | Delta |
+**Training metrics (3 epochs, 55k examples):**
+
+| Epoch | Train Loss | Val Loss | Val Token Accuracy |
 |---|---|---|---|
-| Fintech labels (new) | — | TBD | — |
-| Shared financial labels | TBD | TBD | TBD |
-| General PII (names, emails) | TBD | TBD | TBD |
+| 1 | 0.118 | 0.093 | 97.3% |
+| 2 | 0.081 | 0.084 | 97.5% |
+| 3 | 0.070 | **0.079** | **97.6%** |
+
+**Entity-level F1 (to be filled after eval):**
+
+| Label group | This model F1 |
+|---|---|
+| Fintech labels (new) | TBD |
+| Shared financial labels | TBD |
+| General PII (names, emails) | TBD |
 
 **Per-language F1 (this model vs baseline):**
 
