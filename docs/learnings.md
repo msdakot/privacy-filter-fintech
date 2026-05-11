@@ -81,6 +81,23 @@ The plan assumed flags like `--model`, `--dataset <hf_path>`, `--output <hf_repo
 - Fixed: `harmonize.py` now maps Gretel's `company` → `company_name` (was `unique_id`)
 - `configs/label_space.json` uses the actual 55 base labels verified from the model config
 
+### opf train manages its own base model — do not use --checkpoint for fresh fine-tuning
+- `--checkpoint` in opf is for resuming from a checkpoint opf itself produced, not for specifying a base model
+- For a fresh fine-tune, run `opf train` without `--checkpoint` — opf downloads its own base to `/root/.opf/privacy_filter`
+- The HuggingFace-published model (`openai/privacy-filter`) is in inference format and cannot be used as a `--checkpoint` argument
+- Pre-download and patch `/root/.opf/privacy_filter/config.json` before training to avoid download mid-run
+
+### openai/privacy-filter config.json is missing fields opf train requires
+- Error: `ValueError: Checkpoint config field encoding must be a non-empty string`
+- The HuggingFace version is missing `encoding` and `bidirectional_context` fields that opf's runtime requires
+- Fix: patch after download — `cfg.setdefault('encoding', 'o200k_base')` and `cfg.setdefault('bidirectional_context', True)`
+- Use `setdefault` so existing values are preserved
+
+### Checkpoint write OOMs on standard Colab RAM (exit code -9 = SIGKILL)
+- Training completes fine but bf16 checkpoint serialization spikes CPU RAM over 12.7 GB limit
+- OOM killer fires instantly — no stderr output, only config.json written to output dir
+- Fix: use High RAM runtime (~25 GB) in Colab Pro — Runtime → Change runtime type → High RAM
+
 ### OpenMed/privacy-filter-nemotron is incompatible with opf train as a base checkpoint
 - Error 1: `ValueError: Checkpoint config field encoding must be a non-empty string` — patching config.json with `encoding` and `bidirectional_context` got past this
 - Error 2: `ValueError: num_labels=221 does not match known encoder label spaces (v2:33, v4:57, v7:101)` — opf hardcodes valid checkpoint sizes; OpenMed's 221-label BIOES taxonomy (55 entities × 4 + O) is not in the allowed set
